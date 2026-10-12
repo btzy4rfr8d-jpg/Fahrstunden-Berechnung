@@ -1,0 +1,14 @@
+{
+  "name": "Fahrlehrer-Protokoll",
+  "short_name": "Fahrlehrer",
+  "description": "Fahrstunden, Gehalt, Urlaubszeit und Prüfungsstatistik",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f6f8",
+  "theme_color": "#17324d",
+  "icons": [
+    {"src": "./icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "./icon-512.png", "sizes": "512x512", "type": "image/png"}
+  ]
+}

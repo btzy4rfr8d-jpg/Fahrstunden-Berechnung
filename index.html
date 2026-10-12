@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fahrlehrer-Protokoll</title>
+<style>
+:root{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#20242a;background:#f4f6f8}
+*{box-sizing:border-box}body{margin:0}header{background:#17324d;color:white;padding:22px 16px}header h1{margin:0 0 5px;font-size:1.45rem}header p{margin:0;color:#d7e2ec;font-size:.94rem}
+main{max-width:1100px;margin:auto;padding:16px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.tabs button,.btn{border:0;border-radius:10px;padding:10px 14px;background:#e2e8ee;color:#203040;font-weight:650;cursor:pointer}.tabs button.active,.btn.primary{background:#17324d;color:white}.btn.danger{background:#fee2e2;color:#991b1b}.panel{background:white;border:1px solid #e0e5ea;border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 2px 8px #172b3a0a}.panel h2{font-size:1.08rem;margin:0 0 14px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}label{display:block;font-size:.88rem;font-weight:650;margin-bottom:5px}input,select,textarea{width:100%;padding:10px;border:1px solid #cbd5df;border-radius:8px;background:white;font:inherit}input[type=number]{min-width:0}small,.muted{color:#647383}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.metric{background:#f4f7fa;border-radius:10px;padding:12px}.metric .label{font-size:.8rem;color:#637386}.metric .value{font-size:1.25rem;font-weight:750;margin-top:4px;overflow-wrap:anywhere}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:.91rem}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #e7ebef;white-space:nowrap}th{color:#526273;font-size:.8rem}td.num,th.num{text-align:right}.status{display:inline-block;padding:3px 8px;border-radius:99px;font-size:.78rem;font-weight:700}.pass{background:#dcfce7;color:#166534}.fail{background:#fee2e2;color:#991b1b}.open{background:#fef3c7;color:#92400e}.hidden{display:none!important}.note{font-size:.86rem;line-height:1.45;color:#5b6875}.section-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.section-head h2{margin-bottom:0}.bar{height:8px;background:#e6ebf0;border-radius:99px;overflow:hidden;margin-top:8px}.bar span{display:block;height:100%;background:#24724b}.empty{padding:22px;text-align:center;color:#667585}
+@media(max-width:700px){.grid,.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}main{padding:10px}.panel{padding:13px}.metric .value{font-size:1.1rem}}
+@media(max-width:420px){.grid{grid-template-columns:1fr 1fr}.grid .wide{grid-column:1/-1}}
+</style>
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#17324d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Fahrlehrer">
+<link rel="apple-touch-icon" href="./icon-192.png">
+</head>
+<body>
+<header><h1>Fahrlehrer-Protokoll</h1><p>Fahrstunden · Gehalt · Urlaubszeit · Prüfungsstatistik</p></header>
+<main>
+<div class="tabs" role="tablist">
+<button class="active" data-tab="entry">Tägliche Eingabe</button>
+<button data-tab="overview">Übersichten</button>
+<button data-tab="stats">Prüfungsquote</button>
+<button data-tab="settings">Daten & Regeln</button>
+</div>
+
+<section id="entry" class="view">
+<div class="panel">
+<h2 id="formTitle">Arbeitstag erfassen</h2>
+<form id="entryForm">
+<input type="hidden" id="editId">
+<div class="grid">
+<div><label for="date">Datum</label><input id="date" type="date" required></div>
+<div><label>Kalenderwoche</label><input id="kw" readonly aria-label="Kalenderwoche"></div>
+<div><label for="f45">Fahrstunden à 45 Min.</label><input id="f45" type="number" min="0" step="1" value="0" required></div>
+<div><label for="f60">Fahrstunden à 60 Min.</label><input id="f60" type="number" min="0" step="1" value="0" required></div>
+<div><label for="f90">Fahrstunden à 90 Min.</label><input id="f90" type="number" min="0" step="1" value="0" required></div>
+<div><label for="exams">Prüfungen insgesamt</label><input id="exams" type="number" min="0" step="1" value="0" required></div>
+<div><label for="passed">Davon bestanden</label><input id="passed" type="number" min="0" step="1" value="0" required></div>
+<div><label for="failed">Davon nicht bestanden</label><input id="failed" type="number" min="0" step="1" value="0" required></div>
+<div><label for="theory">Theorieunterrichte à 90 Min.</label><input id="theory" type="number" min="0" step="1" value="0" required></div>
+<div><label for="other">Sonstige Tätigkeiten (45-Min.-Einheiten)</label><input id="other" type="number" min="0" step="1" value="0" required></div>
+<div class="wide" style="grid-column:1/-1"><label for="notes">Notiz (optional)</label><input id="notes" type="text" maxlength="180" placeholder="z. B. besondere Vorkommnisse"></div>
+</div>
+<p class="note">Bei mehreren Prüfungen trage die Anzahl der bestandenen und nicht bestandenen ein. Nicht zugeordnete Prüfungsergebnisse bleiben bei der Prozentquote unberücksichtigt, bis sie eingetragen sind.</p>
+<div id="formError" class="note" style="color:#b91c1c" aria-live="polite"></div>
+<div class="actions"><button class="btn primary" type="submit">Eintrag speichern</button><button class="btn" type="button" id="resetForm">Eingabe zurücksetzen</button></div>
+</form>
+</div>
+<div class="panel">
+<h2>Vorschau für den ausgewählten Tag</h2>
+<div class="cards">
+<div class="metric"><div class="label">Vergütung</div><div class="value" id="previewPay">0,00 €</div></div>
+<div class="metric"><div class="label">Gehalt-Minuten</div><div class="value" id="previewPaid">0</div></div>
+<div class="metric"><div class="label">Urlaubs-Minuten</div><div class="value" id="previewVacation">0</div></div>
+<div class="metric"><div class="label">Bestehensquote</div><div class="value" id="previewRate">–</div></div>
+</div>
+</div>
+</section>
+
+<section id="overview" class="view hidden">
+<div class="panel">
+<div class="section-head"><h2>Zeitraum auswählen</h2><div class="grid two" style="min-width:min(100%,380px)"><div><label for="period">Ansicht</label><select id="period"><option value="day">Tag</option><option value="week">Kalenderwoche</option><option value="month" selected>Monat</option></select></div><div><label for="periodDate">Datum im Zeitraum</label><input type="date" id="periodDate"></div></div></div>
+<p class="note">Wochen laufen von Montag bis Sonntag. Die KW wird nach ISO 8601 berechnet.</p>
+</div>
+<div class="panel"><h2 id="periodTitle">Monatsauswertung</h2><div class="cards" id="summaryCards"></div></div>
+<div class="panel"><h2>Einträge im Zeitraum</h2><div class="tablewrap" id="entriesTable"></div></div>
+</section>
+
+<section id="stats" class="view hidden">
+<div class="panel">
+<h2>Prüfungserfolge</h2>
+<p class="note">Die Quote basiert auf Prüfungen mit eingetragenem Ergebnis: bestanden ÷ (bestanden + nicht bestanden). Prüfungen ohne Ergebnis werden separat ausgewiesen.</p>
+<div class="cards" id="allStats"></div>
+</div>
+<div class="panel"><h2>Rollierende Auswertung</h2><p class="muted">Die letzten 3, 6, 9 und 12 Monate einschließlich des aktuellen Monats.</p><div id="rollingStats"></div></div>
+</section>
+
+<section id="settings" class="view hidden">
+<div class="panel"><h2>Deine Abrechnungsregeln</h2>
+<div class="tablewrap"><table><thead><tr><th>Tätigkeit</th><th class="num">Gehalt</th><th class="num">Urlaubszeit</th></tr></thead><tbody>
+<tr><td>Fahrstunde 45 Min.</td><td class="num">23,00 €</td><td class="num">45 Min.</td></tr>
+<tr><td>Fahrstunde 60 Min.</td><td class="num">30,67 € (zeitanteilig)</td><td class="num">60 Min.</td></tr>
+<tr><td>Fahrstunde 90 Min.</td><td class="num">46,00 €</td><td class="num">90 Min.</td></tr>
+<tr><td>Prüfung</td><td class="num">51,11 € (100 Min.)</td><td class="num">55 Min.</td></tr>
+<tr><td>Theorieunterricht</td><td class="num">46,00 €</td><td class="num">90 Min.</td></tr>
+<tr><td>Sonstige Tätigkeit je 45-Min.-Einheit</td><td class="num">23,00 €</td><td class="num">0 Min.</td></tr>
+</tbody></table></div>
+<p class="note">Gehalt wird minutengenau proportional zu 23 € je 45 Minuten berechnet. Prüfungen zählen mit 100 Minuten fürs Gehalt, aber nur 55 Minuten für die Urlaubszeit. Sonstige Tätigkeiten zählen nur fürs Gehalt.</p>
+</div>
+<div class="panel"><h2>Datensicherung</h2><p class="note">Einträge werden lokal in diesem Browser auf diesem Gerät gespeichert. Exportiere regelmäßig eine Sicherung, wenn du Daten behalten oder auf ein anderes Gerät übertragen möchtest.</p><div class="actions"><button class="btn primary" id="exportCsv">CSV exportieren</button><button class="btn" id="exportJson">Datensicherung herunterladen</button><label class="btn" for="importFile" style="margin:0;cursor:pointer">Sicherung importieren</label><input id="importFile" type="file" accept=".json,application/json" class="hidden"></div><div id="backupMessage" class="note" aria-live="polite"></div><p class="note">Die App ist ein persönliches Protokoll und ersetzt keine offizielle Lohnabrechnung. Bitte sichere deine Daten regelmäßig.</p></div>
+<div class="panel"><h2>Alle Einträge löschen</h2><p class="note">Diese Aktion entfernt die lokal gespeicherten Einträge auf diesem Gerät.</p><button class="btn danger" id="deleteAll">Alle Einträge löschen</button></div>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const STORE='fahrlehrer_protokoll_v1';
+let entries=load();
+function load(){try{return JSON.parse(localStorage.getItem(STORE)||'[]')}catch(e){return []}}
+function save(){localStorage.setItem(STORE,JSON.stringify(entries))}
+function n(id){return Math.max(0,parseInt($(id).value||'0',10)||0)}
+function dateToday(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function parseDate(s){return new Date(s+'T12:00:00')}
+function isoWeek(s){const d=parseDate(s);d.setDate(d.getDate()+4-(d.getDay()||7));const y=d.getFullYear();const start=new Date(y,0,1);return Math.ceil((((d-start)/86400000)+1)/7)}
+function fmtDate(s){return parseDate(s).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'})}
+function money(x){return x.toLocaleString('de-DE',{style:'currency',currency:'EUR'})}
+function duration(m){return `${Math.floor(m/60)} Std. ${m%60} Min.`}
+function paidMinutes(e){return e.f45*45+e.f60*60+e.f90*90+e.exams*100+e.theory*90+e.other*45}
+function vacationMinutes(e){return e.f45*45+e.f60*60+e.f90*90+e.exams*55+e.theory*90}
+function pay(e){return paidMinutes(e)*23/45}
+function outcomes(e){return {known:e.passed+e.failed,unknown:Math.max(0,e.exams-e.passed-e.failed)}}
+function rate(e){const o=outcomes(e);return o.known?100*e.passed/o.known:null}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function getForm(){return {id:$('editId').value||crypto.randomUUID(),date:$('date').value,f45:n('f45'),f60:n('f60'),f90:n('f90'),exams:n('exams'),passed:n('passed'),failed:n('failed'),theory:n('theory'),other:n('other'),notes:$('notes').value.trim()}}
+function clearForm(){ $('editId').value='';$('formTitle').textContent='Arbeitstag erfassen';['f45','f60','f90','exams','passed','failed','theory','other'].forEach(id=>$(id).value=0);$('notes').value='';$('date').value=dateToday();updateWeek();updatePreview()}
+function updateWeek(){if($('date').value)$('kw').value=`KW ${String(isoWeek($('date').value)).padStart(2,'0')}`;else $('kw').value=''}
+function updatePreview(){const e=getForm();$('previewPay').textContent=money(pay(e));$('previewPaid').textContent=paidMinutes(e);$('previewVacation').textContent=vacationMinutes(e);const r=rate(e);$('previewRate').textContent=r===null?'–':r.toLocaleString('de-DE',{maximumFractionDigits:1})+'%'}
+function sum(list){return list.reduce((a,e)=>{a.paid+=paidMinutes(e);a.vac+=vacationMinutes(e);a.pay+=pay(e);a.f45+=e.f45;a.f60+=e.f60;a.f90+=e.f90;a.exams+=e.exams;a.passed+=e.passed;a.failed+=e.failed;a.unknown+=outcomes(e).unknown;a.theory+=e.theory;a.other+=e.other;return a},{paid:0,vac:0,pay:0,f45:0,f60:0,f90:0,exams:0,passed:0,failed:0,unknown:0,theory:0,other:0})}
+function percent(s){const known=s.passed+s.failed;return known?100*s.passed/known:null}
+function metric(label,value){return `<div class="metric"><div class="label">${label}</div><div class="value">${value}</div></div>`}
+function filteredPeriod(){const d=$('periodDate').value||dateToday(),p=$('period').value;let start,end,title;
+if(p==='day'){start=end=d;title=`Tagesübersicht · ${fmtDate(d)} · KW ${isoWeek(d)}`}
+else if(p==='week'){const dt=parseDate(d);const dow=(dt.getDay()+6)%7;dt.setDate(dt.getDate()-dow);start=dt.toISOString().slice(0,10);dt.setDate(dt.getDate()+6);end=dt.toISOString().slice(0,10);title=`Wochenübersicht · KW ${isoWeek(d)} · ${fmtDate(start)}–${fmtDate(end)}`}
+else{start=d.slice(0,7)+'-01';const dt=new Date(parseDate(start));dt.setMonth(dt.getMonth()+1);dt.setDate(0);end=dt.toISOString().slice(0,10);title=`Monatsübersicht · ${parseDate(start).toLocaleDateString('de-DE',{month:'long',year:'numeric'})}`}
+return {start,end,title}}
+function renderOverview(){const r=filteredPeriod(),list=entries.filter(e=>e.date>=r.start&&e.date<=r.end).sort((a,b)=>a.date.localeCompare(b.date));const s=sum(list),pr=percent(s);$('periodTitle').textContent=r.title;
+$('summaryCards').innerHTML=metric('Gehalt',money(s.pay))+metric('Vergütete Zeit',duration(s.paid))+metric('Urlaubszeit',duration(s.vac))+metric('Prüfungen',s.exams)+metric('Bestanden',s.passed)+metric('Nicht bestanden',s.failed)+metric('Bestehensquote',pr===null?'–':pr.toLocaleString('de-DE',{maximumFractionDigits:1})+'%')+metric('Theorieunterrichte',s.theory);
+if(!list.length){$('entriesTable').innerHTML='<div class="empty">Für diesen Zeitraum gibt es noch keine Einträge.</div>';return}
+$('entriesTable').innerHTML=`<table><thead><tr><th>Datum</th><th>KW</th><th>Fahrstunden 45/60/90</th><th>Prüfungen B/NB/offen</th><th>Theorie</th><th>Sonstige Einheiten</th><th class="num">Gehalt</th><th class="num">Urlaubszeit</th><th>Aktionen</th></tr></thead><tbody>${list.map(e=>`<tr><td>${fmtDate(e.date)}</td><td>KW ${isoWeek(e.date)}</td><td>${e.f45}/${e.f60}/${e.f90}</td><td>${e.passed}/${e.failed}/${outcomes(e).unknown}</td><td>${e.theory}</td><td>${e.other}</td><td class="num">${money(pay(e))}</td><td class="num">${duration(vacationMinutes(e))}</td><td><button class="btn" data-edit="${e.id}">Bearbeiten</button> <button class="btn danger" data-delete="${e.id}">Löschen</button></td></tr>`).join('')}</tbody></table>`;
+}
+function monthStartOffset(months){const d=new Date();d.setDate(1);d.setHours(12,0,0,0);d.setMonth(d.getMonth()-(months-1));return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`}
+function renderStats(){const s=sum(entries),p=percent(s);$('allStats').innerHTML=metric('Prüfungen gesamt',s.exams)+metric('Ergebnis erfasst',s.passed+s.failed)+metric('Bestanden',s.passed)+metric('Nicht bestanden',s.failed)+metric('Ohne Ergebnis',s.unknown)+metric('Bestehensquote',p===null?'–':p.toLocaleString('de-DE',{maximumFractionDigits:1})+'%');
+$('rollingStats').innerHTML=[3,6,9,12].map(m=>{const start=monthStartOffset(m),end=dateToday();const x=sum(entries.filter(e=>e.date>=start&&e.date<=end));const known=x.passed+x.failed,rateVal=percent(x);return `<div class="panel" style="margin:10px 0;background:#fafbfd"><div class="section-head"><h2>Letzte ${m} Monate</h2><strong>${rateVal===null?'–':rateVal.toLocaleString('de-DE',{maximumFractionDigits:1})+'%'}</strong></div><p class="note">${fmtDate(start)} bis ${fmtDate(end)}</p><div class="bar"><span style="width:${rateVal===null?0:Math.max(0,Math.min(100,rateVal))}%"></span></div><div class="cards" style="margin-top:10px">${metric('Prüfungen',x.exams)}${metric('Bestanden',x.passed)}${metric('Nicht bestanden',x.failed)}${metric('Ohne Ergebnis',x.unknown)}</div><p class="note">Quote: ${known?`${x.passed} von ${known} Prüfungen mit Ergebnis`: 'Noch keine ausgewerteten Prüfungsergebnisse'}.</p></div>`}).join('')}
+function render(){renderOverview();renderStats()}
+$('entryForm').addEventListener('submit',ev=>{ev.preventDefault();const e=getForm();if(!e.date){$('formError').textContent='Bitte ein Datum auswählen.';return}if(e.passed+e.failed>e.exams){$('formError').textContent='Bestandene und nicht bestandene Prüfungen dürfen zusammen nicht größer sein als die Gesamtzahl der Prüfungen.';return}
+$('formError').textContent='';const idx=entries.findIndex(x=>x.id===e.id);if(idx>=0)entries[idx]=e;else entries.push(e);entries.sort((a,b)=>a.date.localeCompare(b.date));save();$('periodDate').value=e.date;clearForm();render();});
+$('resetForm').addEventListener('click',clearForm);
+['date','f45','f60','f90','exams','passed','failed','theory','other'].forEach(id=>$(id).addEventListener('input',()=>{updateWeek();updatePreview()}));
+$('period').addEventListener('change',renderOverview);$('periodDate').addEventListener('change',renderOverview);
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('hidden',v.id!==b.dataset.tab));if(b.dataset.tab==='overview')renderOverview();if(b.dataset.tab==='stats')renderStats()}));
+document.addEventListener('click',ev=>{const eb=ev.target.closest('[data-edit]'),db=ev.target.closest('[data-delete]');if(eb){const e=entries.find(x=>x.id===eb.dataset.edit);if(!e)return;$('editId').value=e.id;$('formTitle').textContent='Arbeitstag bearbeiten';for(const k of ['date','f45','f60','f90','exams','passed','failed','theory','other','notes'])$(k).value=e[k]??'';updateWeek();updatePreview();document.querySelector('[data-tab="entry"]').click();window.scrollTo({top:0,behavior:'smooth'})}if(db&&confirm('Diesen Eintrag wirklich löschen?')){entries=entries.filter(x=>x.id!==db.dataset.delete);save();render()}});
+function download(name,content,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+$('exportJson').addEventListener('click',()=>{download('fahrlehrer-sicherung-'+dateToday()+'.json',JSON.stringify(entries,null,2),'application/json');$('backupMessage').textContent='Datensicherung wurde erstellt.'});
+$('exportCsv').addEventListener('click',()=>{const heads=['Datum','KW','Fahrstunden 45 Min','Fahrstunden 60 Min','Fahrstunden 90 Min','Prüfungen gesamt','Bestanden','Nicht bestanden','Prüfungsergebnis offen','Theorieunterrichte','Sonstige 45-Min-Einheiten','Vergütete Minuten','Urlaubsminuten','Gehalt EUR','Notiz'];const rows=entries.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(e=>[e.date,isoWeek(e.date),e.f45,e.f60,e.f90,e.exams,e.passed,e.failed,outcomes(e).unknown,e.theory,e.other,paidMinutes(e),vacationMinutes(e),pay(e).toFixed(2).replace('.',','),e.notes]);const csv=[heads,...rows].map(row=>row.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(';')).join('\r\n');download('fahrlehrer-abrechnung-'+dateToday()+'.csv','\ufeff'+csv,'text/csv;charset=utf-8');$('backupMessage').textContent='CSV-Datei wurde erstellt.'});
+$('importFile').addEventListener('change',async ev=>{const f=ev.target.files[0];if(!f)return;try{const data=JSON.parse(await f.text());if(!Array.isArray(data)||!data.every(e=>e.date&&Number.isFinite(e.exams)) )throw new Error('Ungültige Datei');if(!confirm('Import ersetzt die vorhandenen Einträge. Vorher am besten eine Sicherung exportieren. Fortfahren?'))return;entries=data;save();render();$('backupMessage').textContent='Sicherung importiert.'}catch(err){$('backupMessage').textContent='Import fehlgeschlagen: Bitte eine gültige Sicherungsdatei wählen.'}ev.target.value=''});
+$('deleteAll').addEventListener('click',()=>{if(confirm('Wirklich alle gespeicherten Einträge löschen? Diese Aktion kann nicht rückgängig gemacht werden.')){entries=[];save();render();$('backupMessage').textContent='Alle Einträge wurden gelöscht.'}});
+$('date').value=dateToday();$('periodDate').value=dateToday();updateWeek();updatePreview();render();
+</script>
+
+<script>
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("./service-worker.js").catch(() => {}));
+}
+</script>
+</body>
+</html>
